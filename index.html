@@ -1,1 +1,296 @@
-<script>!function(window){const host="https://labs.heygen.com",url=host+"/guest/streaming-embed?share=eyJxdWFsaXR5IjoiaGlnaCIsImF2YXRhck5hbWUiOiIwZDk4MDFhZThjNWE0MWM5ODE1NTY5NDNl%0D%0AN2VlYjE5OSIsInByZXZpZXdJbWciOiJodHRwczovL2ZpbGVzMi5oZXlnZW4uYWkvYXZhdGFyL3Yz%0D%0ALzBkOTgwMWFlOGM1YTQxYzk4MTU1Njk0M2U3ZWViMTk5L2Z1bGwvMi4yL3ByZXZpZXdfdGFyZ2V0%0D%0ALndlYnAiLCJuZWVkUmVtb3ZlQmFja2dyb3VuZCI6ZmFsc2UsImtub3dsZWRnZUJhc2VJZCI6IjQ0%0D%0AMmU4NTc0YTEyZjQ1NzBhOGJiMjQ2ZjFmNWZmYTM2IiwidXNlcm5hbWUiOiI4N2M3Njk1YjhkNjY0%0D%0AYTVjODQ1NmM4M2UxMjMwMjkzMSJ9&inIFrame=1",clientWidth=document.body.clientWidth,wrapDiv=document.createElement("div");wrapDiv.id="heygen-streaming-embed";const container=document.createElement("div");container.id="heygen-streaming-container";const stylesheet=document.createElement("style");stylesheet.innerHTML=`\n  #heygen-streaming-embed {\n    z-index: 9999;\n    position: fixed;\n    left: 40px;\n    bottom: 40px;\n    width: 200px;\n    height: 200px;\n    border-radius: 50%;\n    border: 2px solid #fff;\n    box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.12);\n    transition: all linear 0.1s;\n    overflow: hidden;\n\n    opacity: 0;\n    visibility: hidden;\n  }\n  #heygen-streaming-embed.show {\n    opacity: 1;\n    visibility: visible;\n  }\n  #heygen-streaming-embed.expand {\n    ${clientWidth<540?"height: 266px; width: 96%; left: 50%; transform: translateX(-50%);":"height: 366px; width: calc(366px * 16 / 9);"}\n    border: 0;\n    border-radius: 8px;\n  }\n  #heygen-streaming-container {\n    width: 100%;\n    height: 100%;\n  }\n  #heygen-streaming-container iframe {\n    width: 100%;\n    height: 100%;\n    border: 0;\n  }\n  `;const iframe=document.createElement("iframe");iframe.allowFullscreen=!1,iframe.title="Streaming Embed",iframe.role="dialog",iframe.allow="microphone",iframe.src=url;let visible=!1,initial=!1;window.addEventListener("message",(e=>{e.origin===host&&e.data&&e.data.type&&"streaming-embed"===e.data.type&&("init"===e.data.action?(initial=!0,wrapDiv.classList.toggle("show",initial)):"show"===e.data.action?(visible=!0,wrapDiv.classList.toggle("expand",visible)):"hide"===e.data.action&&(visible=!1,wrapDiv.classList.toggle("expand",visible)))})),container.appendChild(iframe),wrapDiv.appendChild(stylesheet),wrapDiv.appendChild(container),document.body.appendChild(wrapDiv)}(globalThis);</script>
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Neon Pulse</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <style>
+    :root{
+      --bg-a:#05060a;
+      --bg-b:#0a0f1a;
+      --neon-1:#00e5ff;
+      --neon-2:#ff00e6;
+      --neon-3:#ffd400;
+      --glow:1;
+      --strobe:0;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:var(--bg-a);color:#cfd7ff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans",sans-serif}
+    /* Animated gradient background */
+    .bg-anim{
+      position:fixed;inset:0;z-index:-3;filter:saturate(1.2) contrast(1.1);
+      background:
+        radial-gradient(1200px 800px at 20% 30%, rgba(0,229,255,0.12), transparent 60%),
+        radial-gradient(1000px 700px at 80% 20%, rgba(255,0,230,0.10), transparent 60%),
+        radial-gradient(1400px 900px at 60% 80%, rgba(255,212,0,0.08), transparent 60%),
+        linear-gradient(120deg, var(--bg-a), var(--bg-b));
+      animation:bgShift 18s ease-in-out infinite alternate;
+    }
+    @keyframes bgShift{
+      0%{filter:hue-rotate(0deg) brightness(1)}
+      100%{filter:hue-rotate(25deg) brightness(1.15)}
+    }
+
+    /* Neon grid overlay */
+    .grid{
+      position:fixed;inset:0;z-index:-2;opacity:.18;mix-blend-mode:screen;
+      background:
+        repeating-linear-gradient(90deg, rgba(0,229,255,.8) 0 1px, transparent 1px 40px),
+        repeating-linear-gradient(0deg, rgba(255,0,230,.8) 0 1px, transparent 1px 40px);
+      transform:perspective(900px) rotateX(60deg) translateY(10vh);
+      transform-origin:top;
+      animation:gridScroll 4s linear infinite;
+    }
+    @keyframes gridScroll{
+      from{background-position:0 0,0 0}
+      to{background-position:40px 40px,40px 40px}
+    }
+
+    /* Center stage */
+    .wrap{position:relative;min-height:100%;display:grid;place-items:center;padding:48px}
+    .stage{
+      position:relative;
+      width:min(1000px,92vw);
+      padding:48px;
+      border-radius:24px;
+      background:rgba(8,10,20,.36);
+      backdrop-filter:blur(8px) saturate(1.2);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.04) inset,
+        0 10px 40px rgba(0,0,0,.45),
+        0 0 calc(30px * var(--glow)) rgba(0,229,255,.25),
+        0 0 calc(50px * var(--glow)) rgba(255,0,230,.18);
+      transition:box-shadow .2s linear, transform .2s ease;
+    }
+
+    /* Glitchy neon title */
+    .title{
+      font-size:clamp(36px,7vw,92px);
+      line-height:1.02;
+      font-weight:800;
+      letter-spacing:.02em;
+      text-transform:uppercase;
+      margin:0 0 8px;
+      color:#eaf5ff;
+      text-shadow:
+        0 0 10px rgba(255,212,0,.35),
+        0 0 18px rgba(0,229,255,.45),
+        0 0 36px rgba(255,0,230,.35);
+      animation:neonPulse 1.6s ease-in-out infinite, glitch 3.3s steps(1,end) infinite;
+    }
+    @keyframes neonPulse{
+      0%,100%{filter:drop-shadow(0 0 10px rgba(0,229,255,.55))}
+      50%{filter:drop-shadow(0 0 22px rgba(255,0,230,.65))}
+    }
+    @keyframes glitch{
+      0%,97%,100%{transform:translate(0,0)}
+      10%{transform:translate(1px,-1px)}
+      11%{transform:translate(-2px,1px)}
+      12%{transform:translate(2px,0)}
+      60%{transform:translate(0,0)}
+    }
+
+    .lead{
+      font-size:clamp(14px,2.2vw,18px);
+      color:#b7c3ff;
+      opacity:.9;
+      margin:0 0 24px;
+    }
+
+    /* Neon buttons */
+    .controls{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{
+      cursor:pointer;
+      border:0;
+      padding:14px 18px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      border-radius:14px;
+      background:linear-gradient(90deg, rgba(0,229,255,.2), rgba(255,0,230,.2));
+      color:#f4f8ff;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.08) inset,
+        0 10px 18px rgba(0,0,0,.35),
+        0 0 14px rgba(0,229,255,.35),
+        0 0 28px rgba(255,0,230,.28);
+      transition:transform .12s ease, box-shadow .12s ease, filter .12s linear;
+      backdrop-filter:blur(4px);
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .btn:active{transform:translateY(0)}
+    .btn--hot{background:linear-gradient(90deg, rgba(255,212,0,.25), rgba(255,0,230,.28))}
+
+    /* Strobe ring */
+    .strobe{
+      position:absolute;inset:-12px;border-radius:28px;pointer-events:none;mix-blend-mode:screen;
+      box-shadow:
+        0 0 calc(20px + 10px * var(--strobe)) rgba(255,212,0,.55),
+        inset 0 0 calc(10px + 10px * var(--strobe)) rgba(0,229,255,.35);
+      animation:strobe 120ms steps(2,end) infinite;
+      opacity:calc(.15 * var(--strobe));
+      transition:opacity .08s linear;
+    }
+    @keyframes strobe{
+      0%{filter:hue-rotate(0deg) brightness(1)}
+      100%{filter:hue-rotate(45deg) brightness(1.25)}
+    }
+
+    /* Particle canvas sits above grid, below UI */
+    canvas#fx{
+      position:fixed;inset:0;z-index:-1;pointer-events:none;
+    }
+
+    /* HUD badges */
+    .badge{
+      position:fixed;right:16px;top:16px;padding:8px 12px;border-radius:12px;
+      background:rgba(15,20,35,.6);backdrop-filter:blur(6px);
+      font-size:12px;border:1px solid rgba(255,255,255,.08);
+      box-shadow:0 0 12px rgba(0,229,255,.25);
+    }
+    .badge b{color:#fff}
+  </style>
+</head>
+<body>
+  <div class="bg-anim"></div>
+  <div class="grid"></div>
+  <canvas id="fx"></canvas>
+
+  <div class="wrap">
+    <section class="stage" id="stage">
+      <div class="strobe" id="strobe"></div>
+      <h1 class="title">Neon Pulse</h1>
+      <p class="lead">Hard blink, kraftig glow, partikler med additiv lysmiks. Toggler for strobe og intensitet. Null eksterne avhengigheter.</p>
+      <div class="controls">
+        <button class="btn btn--hot" id="toggle-strobe">Toggle strobe</button>
+        <button class="btn" id="pulse">Pulse</button>
+        <button class="btn" id="spawn">Particles x100</button>
+        <button class="btn" id="glow-up">Glow ↑</button>
+        <button class="btn" id="glow-down">Glow ↓</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="badge">GL<span id="glowVal">1.0</span> • STB <b id="stbVal">OFF</b> • FPS <span id="fps">–</span></div>
+
+  <script>
+    // Particle engine (additive light)
+    (() => {
+      const canvas = document.getElementById('fx');
+      const ctx = canvas.getContext('2d', { alpha: true });
+      const DPR = Math.min(2, window.devicePixelRatio || 1);
+      let w=0,h=0, t=0, last=performance.now(), fps=0;
+
+      function resize(){
+        w = canvas.width = Math.floor(innerWidth * DPR);
+        h = canvas.height = Math.floor(innerHeight * DPR);
+        canvas.style.width = innerWidth + 'px';
+        canvas.style.height = innerHeight + 'px';
+      }
+      addEventListener('resize', resize, { passive: true });
+      resize();
+
+      const parts = [];
+      const MAX = 1200;
+
+      function spawn(n=60, cx=w/2, cy=h/2){
+        for(let i=0;i<n && parts.length<MAX;i++){
+          const a = Math.random() * Math.PI*2;
+          const sp = 1 + Math.random()*6;
+          parts.push({
+            x: cx, y: cy,
+            vx: Math.cos(a)*sp, vy: Math.sin(a)*sp,
+            life: 0, max: 40 + Math.random()*60,
+            r: 1 + Math.random()*3,
+            hue: Math.random()*360
+          });
+        }
+      }
+      // initial burst
+      setTimeout(()=>spawn(200, w*0.55, h*0.45), 200);
+
+      function step(){
+        const now = performance.now();
+        const dt = (now - last) / 16.67; // ~frames
+        last = now; t += dt;
+        // fps calc
+        fps = Math.round(1000 / (now - (step._prev || now)));
+        step._prev = now;
+
+        ctx.globalCompositeOperation = 'screen';
+        ctx.clearRect(0,0,w,h);
+
+        for(let i=parts.length-1;i>=0;i--){
+          const p = parts[i];
+          p.life += dt;
+          if(p.life > p.max){ parts.splice(i,1); continue; }
+          p.x += p.vx * dt * 1.2;
+          p.y += p.vy * dt * 1.2;
+          p.vx *= 0.99; p.vy *= 0.99;
+          const alpha = 1 - (p.life / p.max);
+          const rad = p.r * DPR * (1 + Math.sin((p.life/p.max)*Math.PI)*1.5);
+
+          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, rad*8);
+          grad.addColorStop(0, `hsla(${p.hue},100%,60%,${0.50*alpha})`);
+          grad.addColorStop(1, `hsla(${p.hue},100%,50%,0)`);
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, rad*8, 0, Math.PI*2);
+          ctx.fill();
+        }
+        // ambient sweep
+        const sweepHue = (t*8)%360;
+        ctx.fillStyle = `hsla(${sweepHue},100%,50%,0.05)`;
+        ctx.fillRect(0,0,w,h);
+
+        // HUD
+        const fpsEl = document.getElementById('fps');
+        if(fpsEl) fpsEl.textContent = isFinite(fps) ? fps : '–';
+
+        requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+
+      // Controls
+      const root = document.documentElement;
+      const glowVal = document.getElementById('glowVal');
+      const stbVal = document.getElementById('stbVal');
+      const stage = document.getElementById('stage');
+
+      function setGlow(v){
+        v = Math.max(0, Math.min(5, v));
+        root.style.setProperty('--glow', v.toFixed(2));
+        glowVal.textContent = v.toFixed(2);
+      }
+      function getGlow(){
+        return parseFloat(getComputedStyle(root).getPropertyValue('--glow')) || 1;
+      }
+
+      document.getElementById('glow-up').addEventListener('click', ()=>setGlow(getGlow()+0.25));
+      document.getElementById('glow-down').addEventListener('click', ()=>setGlow(getGlow()-0.25));
+
+      document.getElementById('spawn').addEventListener('click', ()=>spawn(100, (Math.random()*w), (Math.random()*h)));
+      document.getElementById('pulse').addEventListener('click', ()=>{
+        stage.style.transform = 'scale(1.02)';
+        setTimeout(()=>stage.style.transform='', 130);
+        spawn(220, w*0.5 + (Math.random()-0.5)*w*0.2, h*0.45 + (Math.random()-0.5)*h*0.15);
+      });
+
+      const strobeBtn = document.getElementById('toggle-strobe');
+      strobeBtn.addEventListener('click', ()=>{
+        const cur = parseFloat(getComputedStyle(root).getPropertyValue('--strobe')) || 0;
+        const next = cur>0 ? 0 : 1;
+        root.style.setProperty('--strobe', next);
+        stbVal.textContent = next>0 ? 'ON' : 'OFF';
+      });
+    })();
+  </script>
+
+  <!-- heygen-streaming-embed:start -->
+  <script>
+  !function(window){const host="https://labs.heygen.com",url=host+"/guest/streaming-embed?share=eyJxdWFsaXR5IjoiaGlnaCIsImF2YXRhck5hbWUiOiIwZDk4MDFhZThjNWE0MWM5ODE1NTY5NDNl%0D%0AN2VlYjE5OSIsInByZXZpZXdfdGFyZ2V0LndlYnAiOiJodHRwczovL2ZpbGVzMi5oZXlnZW4uYWkvYXZhdGFyL3YzLzBkOTgwMWFlOGM1YTQxYzk4MTU1Njk0M2U3ZWViMTk5L2Z1bGwvMi4yL3ByZXZpZXdfdGFyZ2V0LndlYnAiLCJuZWVkUmVtb3ZlQmFja2dyb3VuZCI6ZmFsc2UsImtub3dsZWRnZUJhc2VJZCI6IjQ0MmU4NTc0YTEyZjQ1NzBhOGJiMjQ2ZjFmNWZmYTM2IiwidXNlcm5hbWUiOiI4N2M3Njk1YjhkNjY0YTVjODQ1NmM4M2UxMjMwMjkzMSJ9&inIFrame=1",clientWidth=document.body.clientWidth,wrapDiv=document.createElement("div");wrapDiv.id="heygen-streaming-embed";const container=document.createElement("div");container.id="heygen-streaming-container";const stylesheet=document.createElement("style");stylesheet.innerHTML=`\n  #heygen-streaming-embed {\n    z-index: 9999;\n    position: fixed;\n    left: 40px;\n    bottom: 40px;\n    width: 200px;\n    height: 200px;\n    border-radius: 50%;\n    border: 2px solid #fff;\n    box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.12);\n    transition: all linear 0.1s;\n    overflow: hidden;\n\n    opacity: 0;\n    visibility: hidden;\n  }\n  #heygen-streaming-embed.show {\n    opacity: 1;\n    visibility: visible;\n  }\n  #heygen-streaming-embed.expand {\n    ${clientWidth<540?"height: 266px; width: 96%; left: 50%; transform: translateX(-50%);":"height: 366px; width: calc(366px * 16 / 9);"}\n    border: 0;\n    border-radius: 8px;\n  }\n  #heygen-streaming-container {\n    width: 100%;\n    height: 100%;\n  }\n  #heygen-streaming-container iframe {\n    width: 100%;\n    height: 100%;\n    border: 0;\n  }\n  `;const iframe=document.createElement("iframe");iframe.allowFullscreen=!1,iframe.title="Streaming Embed",iframe.role="dialog",iframe.allow="microphone",iframe.src=url;let visible=!1,initial=!1;window.addEventListener("message",(e=>{e.origin===host&&e.data&&e.data.type&&"streaming-embed"===e.data.type&&("init"===e.data.action?(initial=!0,wrapDiv.classList.toggle("show",initial)):"show"===e.data.action?(visible=!0,wrapDiv.classList.toggle("expand",visible)):"hide"===e.data.action&&(visible=!1,wrapDiv.classList.toggle("expand",visible)))})),container.appendChild(iframe),wrapDiv.appendChild(stylesheet),wrapDiv.appendChild(container),document.body.appendChild(wrapDiv)}(globalThis);
+  </script>
+  <!-- heygen-streaming-embed:end -->
+</body>
+</html>
